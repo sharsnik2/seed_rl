@@ -16,6 +16,7 @@ from seed_rl.common import utils
 from seed_rl.unity import env
 from seed_rl.unity import networks
 
+
 import tensorflow as tf
 
 def validate_config():
