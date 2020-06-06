@@ -84,6 +84,8 @@ flags.DEFINE_integer('n_steps', 5,
                      'n-step returns: how far ahead we look for computing the '
                      'Bellman targets.')
 flags.DEFINE_float('discounting', .997, 'Discounting factor.')
+flags.DEFINE_integer('max_checkpoints', None,
+                     'Max checkpoints to keep. None -> keep all.')
 
 # Eval settings
 flags.DEFINE_float('eval_epsilon', 1e-3,
