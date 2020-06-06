@@ -22,13 +22,23 @@ start_training () {
   $DIR/../docker/build.sh
   $DIR/../docker/push.sh
   # Create bucket if doesn't exist.
-  gsutil ls gs://seed_rl-${PROJECT_ID} || gsutil mb gs://seed_rl-${PROJECT_ID}
+  gsutil ls gs://seed_rl-${PROJECT_ID} > /dev/null || gsutil mb gs://seed_rl-${PROJECT_ID}
+  # Copy the config file to the bucket if a new job
+  SHOULD_RESTART=$(gsutil ls gs://seed_rl-${PROJECT_ID}/${DIR_NAME}/config.yaml) > /dev/null || true
+  if [ "${SHOULD_RESTART}" != "gs://seed_rl-${PROJECT_ID}/${DIR_NAME}/config.yaml" ]
+	then
+		echo "Saving config to cloud..."
+		gsutil cp /tmp/config.yaml gs://seed_rl-${PROJECT_ID}/${DIR_NAME}/config.yaml > /dev/null
+	else
+		echo "Loading config from cloud..."
+		gsutil cp gs://seed_rl-${PROJECT_ID}/${DIR_NAME}/config.yaml /tmp/config.yaml > /dev/null
+  fi
   # Start training on AI platform.
   gcloud beta ai-platform jobs submit training ${JOB_NAME} \
     --project=${PROJECT_ID} \
     --job-dir gs://seed_rl-${PROJECT_ID}/${DIR_NAME} \
     --region us-central1 \
     --config /tmp/config.yaml \
-    --stream-logs -- --environment=${ENVIRONMENT} --agent=${AGENT} \
+    -- --environment=${ENVIRONMENT} --agent=${AGENT} \
     --actors_per_worker=${ACTORS_PER_WORKER} --workers=${WORKERS} --
 }

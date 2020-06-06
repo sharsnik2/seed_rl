@@ -49,8 +49,8 @@ def create_environment(task):
   import os
   modeOffset = FLAGS.run_mode == 'actor'
   path = Path(__file__).parent.absolute()
-  
-  unity_env = UnityEnvironment('{}/envs/{}/{}'.format(path, FLAGS.game,FLAGS.game), base_port=5005+task+int(modeOffset))
+  print('============== Logging to: {}/unity_logs/ =========='.format(FLAGS.logdir))
+  unity_env = UnityEnvironment('{}/envs/{}/{}'.format(path, FLAGS.game,FLAGS.game), base_port=5005+task+int(modeOffset), log_folder='{}/unity_logs/'.format(FLAGS.logdir))
   env = UnityToGymWrapper(unity_env, flatten_branched = True, use_visual=True, uint8_visual=True)
   env.seed(task)
 
