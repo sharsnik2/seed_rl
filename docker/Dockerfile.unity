@@ -29,6 +29,6 @@ ADD . /seed_rl/
 
 WORKDIR /seed_rl
 
-EXPOSE 5004-5050
+EXPOSE 5004-5500
 
 ENTRYPOINT ["python3", "gcp/run.py"]

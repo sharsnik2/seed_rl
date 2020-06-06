@@ -22,7 +22,13 @@ export ENVIRONMENT=unity
 export CONFIG=unity
 export AGENT=r2d2
 export WORKERS=32
+export JOB_NAME="SEED_$(date +"%Y%m%d%H%M%S")"
 export ACTORS_PER_WORKER=20
+if [ -z "$1" ]
+	export DIR_NAME=$1
+  then
+    export DIR_NAME=JOB_NAME
+fi
 
 cat > /tmp/config.yaml <<EOF
 trainingInput:

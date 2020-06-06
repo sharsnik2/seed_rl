@@ -22,6 +22,7 @@ import gym
 from gym import wrappers
 from gym_unity.envs import UnityToGymWrapper
 from seed_rl.unity import unity_preprocessing
+from pathlib import Path
 
 import os
 os.environ["DISPLAY"]=":100"
@@ -47,7 +48,9 @@ def create_environment(task):
   full_game_name = '{}'.format(FLAGS.game)
   import os
   modeOffset = FLAGS.run_mode == 'actor'
-  unity_env = UnityEnvironment('../unity/envs/{}/{}'.format(FLAGS.game,FLAGS.game), base_port=5005+task+int(modeOffset))
+  path = Path(__file__).parent.absolute()
+  
+  unity_env = UnityEnvironment('{}/envs/{}/{}'.format(path, FLAGS.game,FLAGS.game), base_port=5005+task+int(modeOffset))
   env = UnityToGymWrapper(unity_env, flatten_branched = True, use_visual=True, uint8_visual=True)
   env.seed(task)
 

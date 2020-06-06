@@ -23,11 +23,10 @@ start_training () {
   $DIR/../docker/push.sh
   # Create bucket if doesn't exist.
   gsutil ls gs://seed_rl-${PROJECT_ID} || gsutil mb gs://seed_rl-${PROJECT_ID}
-  JOB_NAME="SEED_$(date +"%Y%m%d%H%M%S")"
   # Start training on AI platform.
   gcloud beta ai-platform jobs submit training ${JOB_NAME} \
     --project=${PROJECT_ID} \
-    --job-dir gs://seed_rl-${PROJECT_ID}/${JOB_NAME} \
+    --job-dir gs://seed_rl-${PROJECT_ID}/${DIR_NAME} \
     --region us-central1 \
     --config /tmp/config.yaml \
     --stream-logs -- --environment=${ENVIRONMENT} --agent=${AGENT} \
