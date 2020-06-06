@@ -37,4 +37,4 @@ WORKDIR /seed_rl
 
 EXPOSE 5004-5500
 
-ENTRYPOINT ["/bin/bash", "unity/run.sh"]
+ENTRYPOINT ["/bin/bash", "unity/start.sh"]
