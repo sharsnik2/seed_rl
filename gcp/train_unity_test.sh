@@ -63,13 +63,13 @@ trainingInput:
       - GridWorldLinux
     - parameterName: inference_batch_size
       type: INTEGER
-      minValue: 32
-      maxValue: 32
+      minValue: 1
+      maxValue: 1
       scaleType: UNIT_LOG_SCALE
     - parameterName: batch_size
       type: INTEGER
-      minValue: 64
-      maxValue: 64
+      minValue: 1
+      maxValue: 1
       scaleType: UNIT_LOG_SCALE
     - parameterName: replay_buffer_min_size
       type: INTEGER
@@ -103,8 +103,8 @@ trainingInput:
       scaleType: UNIT_LOG_SCALE
     - parameterName: num_eval_actors
       type: INTEGER
-      minValue: 30
-      maxValue: 30
+      minValue: 0
+      maxValue: 0
       scaleType: UNIT_LINEAR_SCALE
     - parameterName: burn_in
       type: INTEGER

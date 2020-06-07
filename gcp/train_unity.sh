@@ -39,12 +39,12 @@ trainingInput:
   # Training on ATARI requires a bit more than 104GBs due to the large replay
   # buffer, so we need n1-highmem-32, which requires 2 GPUs (see
   # https://cloud.google.com/ml-engine/docs/using-gpus).
-  masterType: n1-highmem-32
+  masterType: n1-highmem-64
   masterConfig:
     imageUri: ${IMAGE_URI}:${CONFIG}
     acceleratorConfig:
-      count: 2
-      type: NVIDIA_TESLA_P100
+      count: 4
+      type: NVIDIA_TESLA_P4
   workerCount: ${WORKERS}
   workerType: n1-standard-4
   workerConfig:
