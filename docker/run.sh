@@ -34,6 +34,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 Xvfb :100 +extension Composite +extension RANDR +extension RENDER +extension GLX -screen 0 100x100x24 &
 
+export DISPLAY=:100
+echo "=========== XVFB started ========"
+glxinfo
+
 tmux new-session -d -t seed_rl
 mkdir -p /tmp/seed_rl
 cat >/tmp/seed_rl/instructions <<EOF
