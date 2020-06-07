@@ -24,6 +24,15 @@ from gym_unity.envs import UnityToGymWrapper
 from seed_rl.unity import unity_preprocessing
 from pathlib import Path
 
+import mlagents_envs
+from mlagents_envs.logging_util import get_logger
+from mlagents_envs.exception import (
+    UnityEnvironmentException,
+    UnityActionException,
+    UnityTimeOutException,
+    UnityCommunicatorStoppedException,
+)
+
 FLAGS = flags.FLAGS
 
 # Environment settings.
