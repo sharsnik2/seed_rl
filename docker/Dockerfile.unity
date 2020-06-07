@@ -37,4 +37,6 @@ WORKDIR /seed_rl
 
 EXPOSE 5004-5500
 
-ENTRYPOINT ["xvfb-run", "--auto-servernum", "--server-args='-screen 0 640x480x24'", "unity/start.sh"]
+ENV DISPLAY=:100
+
+ENTRYPOINT ["unity/start.sh"]
