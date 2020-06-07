@@ -33,6 +33,8 @@ from mlagents_envs.exception import (
     UnityCommunicatorStoppedException,
 )
 
+logger = get_logger(__name__)
+
 FLAGS = flags.FLAGS
 
 # Environment settings.
