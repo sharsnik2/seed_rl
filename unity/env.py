@@ -55,7 +55,7 @@ class UnityDockerEnvironment(UnityEnvironment):
 		else:
 			logger.debug("This is the launch string {}".format(launch_string))
 			# Launch Unity environment
-			subprocess_args = ['LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu	xvfb-run --auto-servernum --server-args="-screen 0 100x100x24" {}'.format(launch_string)] + self.executable_args()
+			subprocess_args = ['LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu',	'xvfb-run', '--auto-servernum', '--server-args="-screen 0 100x100x24"', launch_string] + super(UnityEnvironment, self).executable_args()
 			try:
 				self.proc1 = subprocess.Popen(
 					subprocess_args,
