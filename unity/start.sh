@@ -16,8 +16,8 @@ set -e
 
 #nvidia-smi
 
-LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu  xvfb-run --auto-servernum --server-args="-screen 0 100x100x24" python3 /seed_rl/gcp/run.py "$@"
-#python3 /seed_rl/gcp/run.py "$@"
+#LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu  xvfb-run --auto-servernum --server-args="-screen 0 100x100x24" python3 /seed_rl/gcp/run.py "$@"
+python3 /seed_rl/gcp/run.py "$@"
 
 #LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu xvfb-run --auto-servernum --server-args='-screen 0 100x100x24' /seed_rl/unity/envs/GridWorldLinux/GridWorldLinux.x86_64 &
 

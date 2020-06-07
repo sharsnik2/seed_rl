@@ -21,8 +21,8 @@ source $DIR/setup.sh
 export ENVIRONMENT=unity
 export CONFIG=unity
 export AGENT=r2d2
-export WORKERS=32
-export ACTORS_PER_WORKER=20
+export WORKERS=64
+export ACTORS_PER_WORKER=10
 export JOB_NAME="SEED_$(date +"%Y%m%d%H%M%S")"
 export DIR_NAME="${JOB_NAME}"
 
@@ -39,12 +39,12 @@ trainingInput:
   # Training on ATARI requires a bit more than 104GBs due to the large replay
   # buffer, so we need n1-highmem-32, which requires 2 GPUs (see
   # https://cloud.google.com/ml-engine/docs/using-gpus).
-  masterType: n1-highmem-64
+  masterType: n1-highmem-32
   masterConfig:
     imageUri: ${IMAGE_URI}:${CONFIG}
     acceleratorConfig:
-      count: 4
-      type: NVIDIA_TESLA_P4
+      count: 2
+      type: NVIDIA_TESLA_P100
   workerCount: ${WORKERS}
   workerType: n1-standard-4
   workerConfig:
@@ -78,8 +78,8 @@ trainingInput:
       scaleType: UNIT_LOG_SCALE
     - parameterName: replay_buffer_size
       type: INTEGER
-      minValue: 100000
-      maxValue: 100000
+      minValue: 20000
+      maxValue: 20000
       scaleType: UNIT_LOG_SCALE
     - parameterName: total_environment_frames
       type: DOUBLE
@@ -103,8 +103,8 @@ trainingInput:
       scaleType: UNIT_LOG_SCALE
     - parameterName: num_eval_actors
       type: INTEGER
-      minValue: 30
-      maxValue: 30
+      minValue: 10
+      maxValue: 10
       scaleType: UNIT_LINEAR_SCALE
     - parameterName: burn_in
       type: INTEGER

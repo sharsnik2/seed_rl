@@ -33,6 +33,35 @@ flags.DEFINE_integer('max_random_noops', 30,
                      'Maximal number of random no-ops at the beginning of each '
                      'episode.')
 
+class UnityDockerEnvironment(UnityEnvironment):
+	def executable_launcher(self, file_name, no_graphics, args):
+        launch_string = self.validate_environment_path(file_name)
+        if launch_string is None:
+            self._close(0)
+            raise UnityEnvironmentException(
+                f"Couldn't launch the {file_name} environment. Provided filename does not match any environments."
+            )
+        else:
+            logger.debug("This is the launch string {}".format(launch_string))
+            # Launch Unity environment
+            subprocess_args = ['LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu  xvfb-run --auto-servernum --server-args="-screen 0 100x100x24" {}'.format(launch_string)] + self.executable_args()
+            try:
+                self.proc1 = subprocess.Popen(
+                    subprocess_args,
+                    # start_new_session=True means that signals to the parent python process
+                    # (e.g. SIGINT from keyboard interrupt) will not be sent to the new process on POSIX platforms.
+                    # This is generally good since we want the environment to have a chance to shutdown,
+                    # but may be undesirable in come cases; if so, we'll add a command-line toggle.
+                    # Note that on Windows, the CTRL_C signal will still be sent.
+                    start_new_session=True,
+                )
+            except PermissionError as perm:
+                # This is likely due to missing read or execute permissions on file.
+                raise UnityEnvironmentException(
+                    f"Error when trying to launch environment - make sure "
+                    f"permissions are set correctly. For example "
+                    f'"chmod -R 755 {launch_string}"'
+                ) from perm
 
 def create_environment(task):  
   logging.info('Creating environment: %s', FLAGS.game)
@@ -45,7 +74,7 @@ def create_environment(task):
   import os
   modeOffset = FLAGS.run_mode == 'actor'
   path = Path(__file__).parent.absolute()
-  unity_env = UnityEnvironment('{}/envs/{}/{}'.format(path, FLAGS.game,FLAGS.game), base_port=5005+task+int(modeOffset))
+  unity_env = UnityDockerEnvironment('{}/envs/{}/{}'.format(path, FLAGS.game,FLAGS.game), base_port=5005+task+int(modeOffset))
   env = UnityToGymWrapper(unity_env, flatten_branched = True, use_visual=True, uint8_visual=True)
   env.seed(task)
 
