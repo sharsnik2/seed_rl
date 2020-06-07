@@ -71,7 +71,7 @@ class UnityDockerEnvironment(UnityEnvironment):
 		else:
 			logger.debug("This is the launch string {}".format(launch_string))
 			# Launch Unity environment
-			subprocess_args = ['LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu',	'xvfb-run', '--auto-servernum', '--server-args="-screen 0 100x100x24"', launch_string]
+			subprocess_args = ['xvfb-run', '--auto-servernum', '--server-args="-screen 0 100x100x24"', launch_string]
 			if no_graphics:
 				subprocess_args += ["-nographics", "-batchmode"]
 			subprocess_args += [UnityEnvironment.PORT_COMMAND_LINE_ARG, str(self.port)]
