@@ -24,6 +24,7 @@ from gym_unity.envs import UnityToGymWrapper
 from seed_rl.unity import unity_preprocessing
 from pathlib import Path
 
+import subprocess
 from typing import Dict, List, Optional, Any, Tuple
 from mlagents_envs.side_channel.side_channel import SideChannel, IncomingMessage
 import mlagents_envs
