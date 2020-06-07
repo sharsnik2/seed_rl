@@ -45,6 +45,19 @@ flags.DEFINE_integer('max_random_noops', 30,
 										 'episode.')
 
 class UnityDockerEnvironment(UnityEnvironment):
+	def __init__(
+        self,
+        file_name: Optional[str] = None,
+        worker_id: int = 0,
+        base_port: Optional[int] = None,
+        seed: int = 0,
+        no_graphics: bool = False,
+        timeout_wait: int = 60,
+        additional_args: Optional[List[str]] = None,
+        side_channels: Optional[List[SideChannel]] = None,
+    ):
+		super(UnityDockerEnvironment, self).__init__(**locals())
+	
 	def executable_launcher(self, file_name, no_graphics, args):
 		launch_string = self.validate_environment_path(file_name)
 		if launch_string is None:
@@ -55,7 +68,7 @@ class UnityDockerEnvironment(UnityEnvironment):
 		else:
 			logger.debug("This is the launch string {}".format(launch_string))
 			# Launch Unity environment
-			subprocess_args = ['LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu',	'xvfb-run', '--auto-servernum', '--server-args="-screen 0 100x100x24"', launch_string] + super(UnityEnvironment, self).executable_args()
+			subprocess_args = ['LD_LIBRARY_PATH=/usr/lib/mesa-diverted/x86_64-linux-gnu',	'xvfb-run', '--auto-servernum', '--server-args="-screen 0 100x100x24"', launch_string] + super(UnityDockerEnvironment, self).executable_args()
 			try:
 				self.proc1 = subprocess.Popen(
 					subprocess_args,
