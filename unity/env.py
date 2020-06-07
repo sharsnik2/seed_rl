@@ -24,10 +24,6 @@ from gym_unity.envs import UnityToGymWrapper
 from seed_rl.unity import unity_preprocessing
 from pathlib import Path
 
-import os
-os.environ["DISPLAY"]=":100"
-
-
 FLAGS = flags.FLAGS
 
 # Environment settings.
