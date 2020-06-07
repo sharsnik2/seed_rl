@@ -76,9 +76,10 @@ class UnityDockerEnvironment(UnityEnvironment):
 				subprocess_args += ["-nographics", "-batchmode"]
 			subprocess_args += [UnityEnvironment.PORT_COMMAND_LINE_ARG, str(self.port)]
 			subprocess_args += args
+			print(" ".join(subprocess_args))
 			try:
 				self.proc1 = subprocess.Popen(
-					subprocess_args,
+					" ".join(subprocess_args),
 					# start_new_session=True means that signals to the parent python process
 					# (e.g. SIGINT from keyboard interrupt) will not be sent to the new process on POSIX platforms.
 					# This is generally good since we want the environment to have a chance to shutdown,
