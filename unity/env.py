@@ -55,10 +55,9 @@ class UnityDockerEnvironment(UnityEnvironment):
         seed: int = 0,
         no_graphics: bool = False,
         timeout_wait: int = 60,
-        additional_args: Optional[List[str]] = None,
         side_channels: Optional[List[SideChannel]] = None,
     ):
-		super(UnityDockerEnvironment, self).__init__(**locals())
+		super(UnityDockerEnvironment, self).__init__(file_name=file_name, worker_id=worker_id, base_port=base_port, seed=seed, no_graphics=no_graphics, timeout_wait=timeout_wait, side_channels=side_channels )
 	
 	def executable_launcher(self, file_name, no_graphics, args):
 		launch_string = self.validate_environment_path(file_name)
