@@ -13,7 +13,7 @@
 
 FROM tensorflow/tensorflow:2.1.0-gpu-py3
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   git \
   cmake \
   build-essential \
