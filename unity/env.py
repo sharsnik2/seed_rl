@@ -76,7 +76,7 @@ class UnityDockerEnvironment(UnityEnvironment):
 				subprocess_args += ["-nographics", "-batchmode"]
 			subprocess_args += [UnityEnvironment.PORT_COMMAND_LINE_ARG, str(self.port)]
 			subprocess_args += args
-			print(" ".join(subprocess_args))
+			
 			try:
 				self.proc1 = subprocess.Popen(
 					" ".join(subprocess_args),
