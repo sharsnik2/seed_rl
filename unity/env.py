@@ -107,7 +107,7 @@ def create_environment(task):
 	modeOffset = FLAGS.run_mode == 'actor'
 	path = Path(__file__).parent.absolute()
 	unity_env = UnityDockerEnvironment('{}/envs/{}/{}'.format(path, FLAGS.game,FLAGS.game), base_port=5005+task+int(modeOffset))
-	env = UnityToGymWrapper(unity_env, flatten_branched = True, use_visual=True, uint8_visual=True)
+	env = UnityToGymWrapper(unity_env, flatten_branched = True, uint8_visual=True)
 	env.seed(task)
 
 
