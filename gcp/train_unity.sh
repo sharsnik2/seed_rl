@@ -60,7 +60,7 @@ trainingInput:
     - parameterName: game
       type: CATEGORICAL
       categoricalValues:
-      - GridWorldLinux
+      - KeyGame
     - parameterName: inference_batch_size
       type: INTEGER
       minValue: 32
