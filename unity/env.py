@@ -41,7 +41,7 @@ logger = get_logger(__name__)
 FLAGS = flags.FLAGS
 
 # Environment settings.
-flags.DEFINE_string('game', 'KeyGame', 'Game name.')
+flags.DEFINE_string('game', 'ButtonGame', 'Game name.')
 flags.DEFINE_integer('num_action_repeats', 1, 'Number of action repeats.')
 flags.DEFINE_integer('max_random_noops', 30,
 										 'Maximal number of random no-ops at the beginning of each '
