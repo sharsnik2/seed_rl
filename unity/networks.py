@@ -84,10 +84,10 @@ class DuelingLSTMDQNNet(tf.Module):
     super(DuelingLSTMDQNNet, self).__init__(name='dueling_lstm_dqn_net')
     self._num_actions = num_actions
     self._body = tf.keras.Sequential([
-        tf.keras.layers.Conv2D(64, [3, 3], 2,
-                               padding='valid', activation='relu'),
-        tf.keras.layers.Conv2D(64, [3, 3], 1,
-                               padding='valid', activation='relu'),
+        #tf.keras.layers.Conv2D(64, [3, 3], 2,
+        #                       padding='valid', activation='relu'),
+        #tf.keras.layers.Conv2D(64, [3, 3], 1,
+        #                       padding='valid', activation='relu'),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(512, activation='relu'),
     ])
