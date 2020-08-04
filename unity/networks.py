@@ -18,6 +18,9 @@
 import collections
 from seed_rl.common import utils
 import tensorflow as tf
+from absl import flags
+
+FLAGS = flags.FLAGS
 
 AgentOutput = collections.namedtuple('AgentOutput', 'action q_values')
 AgentState = collections.namedtuple(
@@ -25,7 +28,9 @@ AgentState = collections.namedtuple(
     # frame_stacking_state: a list of the last (stack_size - 1) observations
     #   with shapes typically [batch_size, height, width, 1].
     'AgentState', 'core_state')
-
+	
+flags.DEFINE_float('noiseSTD', 0.1, 'Amount of noise to add to LSTM hidden state')
+	
 def _unroll_cell(inputs, done, start_state, zero_state, recurrent_cell):
   """Applies a recurrent cell on inputs, taking care of managing state.
 
@@ -66,6 +71,8 @@ def _unroll_cell(inputs, done, start_state, zero_state, recurrent_cell):
                        (x.shape.rank - 1)), x, y),
         zero_state,
         state)
+		
+	state = tf.normal(shape=tf.shape(state), mean=0.0, stddev=flags.noiseSTD, dtype=state.dtype)
     output_t, state = recurrent_cell(input_t, state)
     stacked_outputs.append(output_t)
   return tf.stack(stacked_outputs), state

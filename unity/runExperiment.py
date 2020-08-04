@@ -1,9 +1,12 @@
 import os
+import sys
 
 import collections
 import concurrent.futures
 import math
 import time
+
+sys.path.append(os.path.join(os.path.dirname(__file__),'../../'))
 
 from absl import app
 from absl import flags
@@ -15,9 +18,14 @@ from seed_rl.common import profiling
 from seed_rl.common import utils
 from seed_rl.unity import env
 from seed_rl.unity import networks
+from seed_rl.unity import learner
 
 
 import tensorflow as tf
+
+FLAGS = flags.FLAGS
+
+print(FLAGS)
 
 def validate_config():
 	assert FLAGS.n_steps >= 1, '--n_steps < 1 does not make sense.'
@@ -100,7 +108,7 @@ def runExperiment(create_env_fn, create_agent_fn):
 	zeroIndex = tf.constant([0], dtype=tf.int32)
 		
 	## Loop for multiple runs
-	for i in range(0, 10)
+	for i in range(0, 10):
 		observation = env.reset()
 		reward = 0.0
 		raw_reward = 0.0

@@ -1,0 +1,10 @@
+[workspace]
+restore_data_on_startup = True
+save_data_on_exit = True
+save_history = True
+save_non_project_files = False
+
+[main]
+version = 0.2.0
+recent_files = ['C:\\Users\\Connor\\.spyder-py3\\temp.py', 'unity\\runExperiment.py', 'grpc\\__init__.py', 'unity\\env.py', 'common\\common_flags.py', '__init__.py', 'unity\\r2d2_main.py', 'unity\\networks.py', 'agents\\r2d2\\learner_test.py', 'agents\\r2d2\\learner.py', 'C:\\Users\\Connor\\Anaconda3\\envs\\seed_rl\\lib\\site-packages\\mlagents_envs\\environment.py', 'C:\\Users\\Connor\\Anaconda3\\envs\\seed_rl\\lib\\site-packages\\mlagents_envs\\rpc_communicator.py']
+
