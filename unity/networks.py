@@ -73,8 +73,9 @@ def _unroll_cell(inputs, done, start_state, zero_state, recurrent_cell):
         zero_state,
         state)
 	
-	if FLAGS.noise_std > 0:
-		state = tf.random.normal(shape=tf.shape(state), mean=0.0, stddev=FLAGS.noise_std, dtype=state.dtype)
+    if FLAGS.noise_std > 0:
+        state = tf.random.normal(shape=tf.shape(state), mean=0.0, stddev=FLAGS.noise_std, dtype=state.dtype)
+	
     output_t, state = recurrent_cell(input_t, state)
     stacked_outputs.append(output_t)
   return tf.stack(stacked_outputs), state
