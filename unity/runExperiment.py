@@ -1,34 +1,50 @@
 import os
 import sys
+import pathlib
 
 import collections
 import concurrent.futures
 import math
 import time
-
-sys.path.append(os.path.join(os.path.dirname(__file__),'../../'))
+import tensorflow as tf
+import sys
+import os
 
 from absl import app
 from absl import flags
 from absl import logging
 import numpy as np
+
+#Manually set up path
+p = pathlib.Path(__file__)
+rootDirectory = str(pathlib.Path(*p.parts[:-3]))
+if not rootDirectory in sys.path:
+    sys.path.append(rootDirectory)
+
+seedRLDirectory = str(pathlib.Path(*p.parts[:-2]))
+if seedRLDirectory in sys.path:
+    sys.path.remove(seedRLDirectory)
+
 from seed_rl import grpc
 from seed_rl.common import common_flags	
 from seed_rl.common import profiling
 from seed_rl.common import utils
-from seed_rl.unity import env
 from seed_rl.unity import networks
-from seed_rl.unity import learner
+from seed_rl.agents.r2d2 import learner
+from seed_rl.unity import env
 
 
-import tensorflow as tf
+
+
 
 FLAGS = flags.FLAGS
 
-print(FLAGS)
+FLAGS.eval_epsilon = 0
+
+LOAD_DIR = '/synology/Connor/ButtonGameNoNoiseData' + '/agent/'
 
 def validate_config():
-	assert FLAGS.n_steps >= 1, '--n_steps < 1 does not make sense.'
+    assert FLAGS.n_steps >= 1, '--n_steps < 1 does not make sense.'
 	
 def is_rendering_enabled():
 	return FLAGS.render
@@ -49,10 +65,10 @@ def runExperiment(create_env_fn, create_agent_fn):
 			in the env.
 	"""
 	
-	run_id = 0
+	run_id = 100 #Remove port conflicts
 	
 	logging.info('Starting experiment')
-	validate_config()
+	#validate_config()
 	settings = utils.init_learner(1)
 	strategy, inference_devices, training_strategy, encode, decode = settings
 	
@@ -90,10 +106,13 @@ def runExperiment(create_env_fn, create_agent_fn):
 	# Setup checkpointing and restore checkpoint.
 	ckpt = tf.train.Checkpoint(agent=agent)
 	manager = tf.train.CheckpointManager(
-			ckpt, FLAGS.logdir, max_to_keep=1, keep_checkpoint_every_n_hours=6)
+			ckpt, LOAD_DIR, max_to_keep=1, keep_checkpoint_every_n_hours=6)
 	if manager.latest_checkpoint:
 		logging.info('Restoring checkpoint: %s', manager.latest_checkpoint)
 		ckpt.restore(manager.latest_checkpoint).expect_partial()
+	else:
+		logging.info('No checkpoint found at %s. Exiting...', FLAGS.logdir)
+		return
 	
 	with strategy.scope():
 		@tf.function
@@ -136,6 +155,8 @@ def runExperiment(create_env_fn, create_agent_fn):
 			#	env.render()
 			
 			raw_reward += reward
+			
+		print('Run {} had reward of {}.'.format(i+1, raw_reward))
 
 		
 def create_agent(env_output_specs, num_actions):
