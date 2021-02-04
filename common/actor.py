@@ -85,8 +85,15 @@ def actor_loop(create_env_fn):
           tf.summary.experimental.set_step(actor_step)
           env_output = utils.EnvOutput(reward, done, observation)
           with timer_cls('actor/elapsed_inference_s', 1000):
-            action = client.inference(
+            action, curr_state, curr_action = client.inference(
                 FLAGS.task, run_id, env_output, raw_reward)
+			
+          # if FLAGS.task == 3:
+          # if actor_step < 100 and FLAGS.task == 3 and episode_step < 1:
+          #   logging.info('State: {} Action: {} Observation: {} Reward: {} Done: {}'.format(curr_state[0][0][0], curr_action, observation[:,:,0], reward, done))
+          # if actor_step < 100 and FLAGS.task == 3 and episode_step == 1:
+          #   logging.info('State: {} Action: {}'.format(curr_state[0][0][0], curr_action))
+		  
           with timer_cls('actor/elapsed_env_step_s', 1000):
             observation, reward, done, info = env.step(action.numpy())
           if is_rendering_enabled():

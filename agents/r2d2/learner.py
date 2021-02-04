@@ -42,7 +42,7 @@ import tensorflow as tf
 
 flags.DEFINE_integer('save_checkpoint_secs', 1800,
                      'Checkpoint save period in seconds.')
-flags.DEFINE_integer('total_environment_frames', int(1e9),
+flags.DEFINE_integer('total_environment_frames', int(50e9),
                      'Total environment frames to train for.')
 flags.DEFINE_integer('batch_size', 2, 'Batch size for training.')
 flags.DEFINE_float('replay_ratio', 1.5,
@@ -364,10 +364,10 @@ def compute_loss_and_priorities(
     agent_input_prefix, agent_input_suffix = utils.split_structure(
         (prev_actions, env_outputs), burn_in)
     _, agent_outputs_suffix = utils.split_structure(agent_outputs, burn_in)
-    _, training_state = training_agent(
+    _, training_state, _ = training_agent(
         agent_input_prefix, agent_state, unroll=True)
     training_state = tf.nest.map_structure(tf.stop_gradient, training_state)
-    _, target_state = target_agent(agent_input_prefix, agent_state, unroll=True)
+    _, target_state, _ = target_agent(agent_input_prefix, agent_state, unroll=True)
   else:
     agent_input_suffix = (prev_actions, env_outputs)
     agent_outputs_suffix = agent_outputs
@@ -375,9 +375,9 @@ def compute_loss_and_priorities(
     target_state = agent_state
 
   # Agent outputs have fields with shape [time, batch_size, <field_shape>].
-  training_agent_output, _ = training_agent(
+  training_agent_output, _, _ = training_agent(
       agent_input_suffix, training_state, unroll=True)
-  target_agent_output, _ = target_agent(
+  target_agent_output, _, _ = target_agent(
       agent_input_suffix, target_state, unroll=True)
   _, env_outputs_suffix = agent_input_suffix
   return compute_loss_and_priorities_from_agent_outputs(
@@ -534,7 +534,7 @@ def learner_loop(create_env_fn, create_agent_fn, create_optimizer_fn):
       return target_agent(*decode(args))
 
     # The first call to Keras models to create varibales for agent and target.
-    initial_agent_output, _ = create_variables(input_, initial_agent_state)
+    initial_agent_output, _, _ = create_variables(input_, initial_agent_state)
     create_target_agent_variables(input_, initial_agent_state)
 
     @tf.function
@@ -752,6 +752,10 @@ def learner_loop(create_env_fn, create_agent_fn, create_optimizer_fn):
     info_queue.enqueue_many(EpisodeInfo(*(done_episodes_info + (done_ids,))))
     actor_infos.reset(done_ids)
     actor_infos.add(actor_ids, (FLAGS.num_action_repeats, 0., 0.))
+    actions.reset(done_ids)
+    initial_agent_states = agent.initial_state(
+        tf.shape(done_ids)[0])
+    agent_states.replace(done_ids, initial_agent_states)
 
     # Inference.
     prev_actions = actions.read(actor_ids)
@@ -770,7 +774,7 @@ def learner_loop(create_env_fn, create_agent_fn, create_optimizer_fn):
 
     # Distribute the inference calls among the inference cores.
     branch_index = inference_iteration.assign_add(1) % len(inference_devices)
-    agent_outputs, curr_agent_states = tf.switch_case(branch_index, {
+    agent_outputs, curr_agent_states, _ = tf.switch_case(branch_index, {
         i: make_inference_fn(inference_device)
         for i, inference_device in enumerate(inference_devices)
     })
@@ -819,13 +823,13 @@ def learner_loop(create_env_fn, create_agent_fn, create_optimizer_fn):
     unroll_queue.enqueue_many(unrolls)
     first_agent_states.replace(completed_ids,
                                agent_states.read(completed_ids))
-
+	
     # Update current state.
     agent_states.replace(actor_ids, curr_agent_states)
     actions.replace(actor_ids, agent_outputs.action)
 
     # Return environment actions to actors.
-    return agent_outputs.action
+    return agent_outputs.action, prev_agent_states, prev_actions
 
   with strategy.scope():
     server.bind(inference, batched=True)

@@ -36,7 +36,7 @@ Xvfb :100 +extension Composite +extension RANDR +extension RENDER +extension GLX
 
 export DISPLAY=:100
 echo "=========== XVFB started ========"
-glxinfo
+#glxinfo
 
 tmux new-session -d -t seed_rl
 mkdir -p /tmp/seed_rl
@@ -55,9 +55,17 @@ tmux send-keys KPEnter
 tmux send-keys "../stop_local.sh"
 tmux new-window -d -n learner
 
-COMMAND='rm /tmp/agent -Rf; '"${LEARNER_BINARY}"' --logtostderr --pdb_post_mortem '"$@"' --num_actors='"${NUM_ACTORS}"''
+cp -r /seed_rl/Data/* /tmp
+echo "=========== old data copied ========"
+
+tensorboard --logdir=/tmp --bind_all &
+echo "=========== tensorbaord started ========"
+
+COMMAND=''"${LEARNER_BINARY}"' --logtostderr --pdb_post_mortem '"$@"' --num_actors='"${NUM_ACTORS}"''
 echo $COMMAND
 tmux send-keys -t "learner" "$COMMAND" ENTER
+
+
 
 for ((id=0; id<$NUM_ACTORS; id++)); do
     tmux new-window -d -n "actor_${id}"
